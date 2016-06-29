@@ -9,7 +9,8 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
     '''Represents the menu that pops up before a game'''
     
     def __init__(self):
-        self._menu_window = tkinter.Tk()
+        '''Initializes the state of an Othello game menu.'''
+        self._menu_window = tkinter.Tk() #The root window
         self._menu_window.wm_title("Othello Menu")
         self._menu_window.resizable(0,0)
         self._menu_window.geometry('+550+115') #For positioning the window on the screen
@@ -218,36 +219,44 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
         
 
     def show(self):
+        '''Runs the main loop on the root window.'''
         #self._menu_window.grab_set()
         #self._menu_window.wait_window()
         self._menu_window.mainloop()
         
 
     def get_num_rows(self)->int:
+        '''Gets the number of rows set for a game.''''
         return self._num_rows.get()
 
 
     def get_num_cols(self)->int:
+        '''Gets the number of columns set for a game.''''
         return self._num_cols.get()
 
 
     def get_player_color(self)->str:
+        '''Gets the player color set for a game.''''
         return self._player_color.get() #Must call get() on a control variable to get the value!!!
 
 
     def get_cpu_opp(self)->str:
+        '''Gets the cpu color set for a game.''''
         return self._cpu_opp.get() #Must call get() on a control variable to get the value!!!
     
 
     def get_starter(self)->str:
+        '''Gets the starting player set for a game.''''
         return self._starter.get() #Must call get() on a control variable to get the value!!!
 
 
     def get_top_left_player(self)->str:
+        '''Gets the top-left player set for a game.''''
         return self._tlp.get()
 
 
     def get_win_method(self)->str:
+        '''Gets the win method set for a game.''''
         return self._win_method.get()
 
 
@@ -278,23 +287,31 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
                                          #long as the program is running.
          '''
         self._ok_button_clicked = True
+        
+        #self._menu_window.withdraw()
+        #self._menu_window.quit()
+        
         self._menu_window.destroy()
 
 
     def _on_cancel_button(self):
+        '''Handles the event of the Cancel button being pressed.'''
         #self._cancel_button_clicked = True
         #print(self._cancel_button_clicked)
         self._menu_window.destroy()
         
 
     def was_ok_clicked(self):
+        '''Determines if the OK button was pressed'''
         return self._ok_button_clicked
+
 
 
 class PlayAgain:
     '''A class to represent the pop-up that asks the user if they would like to play again.'''
 
     def __init__(self):
+        '''Initializes the state of a "play-again" pop-up menu.'''
         self._dialog_window = tkinter.Tk()
         self._dialog_window.configure(background='gray')
         self._dialog_window.wm_title("")
@@ -318,18 +335,22 @@ class PlayAgain:
         no_button.grid(row=0, column=1, padx=(5,0), pady=(0,10), sticky=tkinter.E)
 
     def show(self):
+        '''Runs the main loop on the root window.'''
         #self._dialog_window.grab_set()
         #self._dialog_window.wait_window()
         self._dialog_window.mainloop()
 
     def _on_yes_pressed(self):
+        '''Handles the event of the "Yes" button being pressed.'''
         self._dialog_window.destroy()
 
     def _on_no_pressed(self):
+        '''Handles the event of the "No" button bein pressed.'''
         self._play_again = False
         self._dialog_window.destroy()
 
     def will_play_again(self):
+        '''Returns the player's decision to play again or not.'''
         return self._play_again
 
 

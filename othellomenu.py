@@ -287,10 +287,6 @@ class OthelloMenu(): #Watch out! There's already a class called Menu in the tkin
                                          #long as the program is running.
          '''
         self._ok_button_clicked = True
-
-        #FOR TESTING
-        #self._menu_window.withdraw()
-        #self._menu_window.quit()
         
         self._menu_window.destroy()
 

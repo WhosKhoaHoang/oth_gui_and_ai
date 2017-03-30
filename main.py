@@ -9,7 +9,7 @@ if __name__ == "__main__":
     menu.show() #Main loop for the menu kicks in here.
 
     if menu.was_ok_clicked():
-    #Clicking ok should destroy the menu's tkinter window (the tkinter window is destroyed but the menu object isn't)
+    #Clicking ok should destroy the menu's tkinter window (the tkinter window is destroyed but the OthelloMenu object isn't)
         while True:
             if play_again:
                 menu = othellomenu.OthelloMenu()
@@ -33,3 +33,6 @@ if __name__ == "__main__":
                     break
             else: #For when cancel is pressed after deciding to play again...
                 break
+    else:
+        #kill window?
+        print("LOL")

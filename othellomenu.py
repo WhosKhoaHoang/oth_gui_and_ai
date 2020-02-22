@@ -226,37 +226,37 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
         
 
     def get_num_rows(self)->int:
-        '''Gets the number of rows set for a game.''''
+        '''Gets the number of rows set for a game.'''
         return self._num_rows.get()
 
 
     def get_num_cols(self)->int:
-        '''Gets the number of columns set for a game.''''
+        '''Gets the number of columns set for a game.'''
         return self._num_cols.get()
 
 
     def get_player_color(self)->str:
-        '''Gets the player color set for a game.''''
+        '''Gets the player color set for a game.'''
         return self._player_color.get() #Must call get() on a control variable to get the value!!!
 
 
     def get_cpu_opp(self)->str:
-        '''Gets the cpu color set for a game.''''
+        '''Gets the cpu color set for a game.'''
         return self._cpu_opp.get() #Must call get() on a control variable to get the value!!!
     
 
     def get_starter(self)->str:
-        '''Gets the starting player set for a game.''''
+        '''Gets the starting player set for a game.'''
         return self._starter.get() #Must call get() on a control variable to get the value!!!
 
 
     def get_top_left_player(self)->str:
-        '''Gets the top-left player set for a game.''''
+        '''Gets the top-left player set for a game.'''
         return self._tlp.get()
 
 
     def get_win_method(self)->str:
-        '''Gets the win method set for a game.''''
+        '''Gets the win method set for a game.'''
         return self._win_method.get()
 
 

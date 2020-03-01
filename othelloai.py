@@ -66,6 +66,7 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
         #required to return a move for processing.
         #Think: "this is the move associated with the high evaluation function value
     elif gamestate.get_turn() == cpu_player:
+        #print("I'M HERE TO MINIMIZE!")
         #Thought: the CPU is always the maximizing player. Typically, the maximizing player is the (CPU)
         #player who has the current turn.
         best_val = float("-inf")
@@ -137,6 +138,133 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
 
             
         return (best_val, best_move)
+
+
+#Removed the move and move_processor parameters
+def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
+    #Initially (for the very first call), move would probably be None
+    """
+    Executes a cpu move based on a depth-limited
+    minimax algorithm with alpha-beta pruning.
+    @gamestate: The game state of an Othello game
+    @cpu_player: The color of the CPU player ("B" or "W")
+    @alpha: The maximum lower bound for an AB-prune
+    @beta: The minimum upper bound for an AB-prune
+    type gamestate: list
+    type cpu_player: str
+    type alpha: float
+    type beta: float
+    return: A tuple containing the best score for an
+            evaluated gamestate, the move associated
+            with that evaluated gamestate, the alpha
+            value, and the beta value.
+    """
+
+    print("ALPHA-BETA PRUNING IN EFFECT")
+    #Note that the same gamestate object is passed through the
+    #minimax game tree and it keeps track of whose turn it is
+    #throughout the traversal.
+
+    best_move = None
+    if depth == 0 or gamestate.get_winner() != " ":
+        #print("minimax_eval(gamestate, cpu_player): ", minimax_eval(gamestate, cpu_player))
+        return (minimax_eval(gamestate, cpu_player), None, alpha, beta)
+        #. Don't think I actually need cpu_player
+        #. Do I even need to return a move? Yes because minimax is ultimately
+        #  required to return a move for processing.
+        #  Think: "this is the move associated with the high evaluation function value
+
+    if gamestate.get_turn() == cpu_player:
+        print("MAXIMIZING PLAYER'S TURN")
+        #Note that the root of a minimax game tree corresponds to the maximizing player.
+        #Thus, the CPU player is always the maximizing player since minimax is initiated/
+        #called on behalf of the CPU player when its their turn.
+
+        best_val = float("-inf")
+        #best_move = None #Could be no best move if no moves were ever available...
+        valid_moves_lst = _cpu_find_moves(gamestate)
+
+        if valid_moves_lst == []:
+            print("*****EMPTY MOVES ALERT!!!*****")
+
+        '''
+        if valid_moves_lst == []:
+            #Could be possible that when opp player makes a move,
+            #current player ends up not having a move available...
+            #Maybe won't need this if I return None as best_move
+            #(best_move is set to None at the beginning)...
+            return (gamestate, move)
+        '''
+        for move in valid_moves_lst:
+            dummy_game = othello.Othello(gamestate.get_num_rows(),
+                                         gamestate.get_num_cols(),
+                                         gamestate.get_turn(),
+                                         gamestate.get_top_left(),
+                                         gamestate.get_win_method(),
+                                         gamestate.get_board())
+                                         #^This final argument is what allows
+                                         # the dummy gamestate to take on the board
+                                         # configuration of the current gamestate
+
+            #_draw_console_board(dummy_game) #FOR TESTING
+            #Perform the move
+            dummy_game.valid_move(move[0], move[1])
+            (val, move_made, alpha, beta) = minimax_abp(dummy_game, cpu_player,
+                                                        alpha, beta, depth-1)
+            #Note how move_made isn't used...
+
+            #val = minimax(dummy_game, cpu_player, depth-1, move, move_processor)
+            # Perhaps I should also handle case where it's equal? don't want
+            # AI doing same moves all the time.
+            if val > best_val:
+                best_move = move
+                best_val = val
+
+            #If the best value for the maximizing player is
+            #less than alpha,
+            # . Note that best_val <= alpha can't possible
+            #   be true if alpha is -inf
+            # . If alpha is greater than best_val, then
+            #   we've moved beyond the viable range.
+            # . set beta for the next child (i.e., move)
+            if best_val <= alpha:
+                break
+            if best_val >= beta:
+                beta = best_move
+    else:
+        print("MINIMIZING PLAYER'S TURN")
+        best_val = float("inf")
+        #bast_move = None
+        valid_moves_lst = _cpu_find_moves(gamestate)
+
+        '''
+        if valid_moves_lst == []:
+            #Could be possible that when opp player makes a move,
+            #current player ends up not having a move available...
+            return (gamestate, move)
+        '''
+        for move in valid_moves_lst:
+            dummy_game = othello.Othello(gamestate.get_num_rows(),
+                                         gamestate.get_num_cols(),
+                                         gamestate.get_turn(),
+                                         gamestate.get_top_left(),
+                                         gamestate.get_win_method(),
+                                         gamestate.get_board())
+
+            #Perform the move
+            dummy_game.valid_move(move[0], move[1])
+            (val, move_made, alpha, beta) = minimax_abp(dummy_game, cpu_player,
+                                                        alpha, beta, depth-1)
+            if val < best_val:
+                best_move = move
+                best_val = val
+
+            if best_val >= beta:
+                break
+            if best_val <= alpha:
+                alpha = best_move
+
+    return (best_val, best_move, alpha, beta)
 
 
 #Note that we're ultimatrly not just looking at the score to be gained with this evaluation function

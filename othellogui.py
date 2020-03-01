@@ -59,6 +59,8 @@ class OthelloGUI:
         self._root.mainloop()
 
 
+    #TODO: Figure out why there's also a call to the AI for mouse motion event...
+    # - Ah, so that the CPU could make a move when they go first.
     def _on_mouse_motion(self, event):
         '''An event handler that process motion over the canvas.'''
         if self._first_mover == self._cpu_player and not self._cpu_made_first_move:
@@ -66,7 +68,10 @@ class OthelloGUI:
                 othelloai.greedy_cpu(self._gamestate, self._cpu_player, self._process_move)
             elif self._cpu_opp == "Mini Max":
                 while self._gamestate.get_turn() == self._cpu_player and self._gamestate.get_winner() == " ":
-                    result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
+                    #FOCUS HERE
+                    #result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
+                    result = othelloai.minimax_abp(self._gamestate, self._cpu_player,
+                                                   float("-inf"), float("inf"), 3)
                     if result[1] != None:
                         self._process_move(result[1][0], result[1][1])
         self._draw_board()
@@ -119,7 +124,7 @@ class OthelloGUI:
                                     canvas_width, canvas_height*(1/self._num_rows) + delta_y, width=3) #right endpoint (x, y)
             delta_y += canvas_height*(1/self._num_rows) #increment by height of a cell
 
-            
+
     def _on_canvas_click(self, event):
         '''An event handler that processes left mouse button clicks.'''
         if self._game_active:
@@ -133,8 +138,12 @@ class OthelloGUI:
                         othelloai.greedy_cpu(self._gamestate, self._cpu_player, self._process_move)
                     elif self._cpu_opp == "Mini Max":
                         #print("CHANGE DEPTH BACK TO 3 WHEN DONE TESTING!")
-                        while self._gamestate.get_turn() == self._cpu_player and self._gamestate.get_winner() == " ":
-                            result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
+                        while self._gamestate.get_turn() == self._cpu_player and\
+                              self._gamestate.get_winner() == " ":
+                            #FOCUS HERE
+                            #result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
+                            result = othelloai.minimax_abp(self._gamestate, self._cpu_player,
+                                                           float("-inf"), float("inf"), 3)
                             #Handle case where result[1] == None?
                             if result[1] != None:
                                 self._process_move(result[1][0], result[1][1])
@@ -258,6 +267,6 @@ class OthelloGUI:
 #For testing
 if __name__ == "__main__":
     #game = OthelloGUI(4, 4, "B", "Greedy Gary", "W", "B", ">")
-    game = OthelloGUI(8, 8, "B", "Mini Max", "W", "W", ">")
+    game = OthelloGUI(8, 8, "W", "Mini Max", "W", "W", ">")
     #game = OthelloGUI(8, 8, "B", "None", "W", "W", ">")
     game.start()

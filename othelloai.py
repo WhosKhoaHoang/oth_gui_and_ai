@@ -66,7 +66,7 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
         #required to return a move for processing.
         #Think: "this is the move associated with the high evaluation function value
     elif gamestate.get_turn() == cpu_player:
-        #print("I'M HERE TO MINIMIZE!")
+        print("MAXIMIZING PLAYER'S TURN")
         #Thought: the CPU is always the maximizing player. Typically, the maximizing player is the (CPU)
         #player who has the current turn.
         best_val = float("-inf")
@@ -109,7 +109,7 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
         #return best_val
 
     else:
-        #print("I'M HERE TO MINIMIZE!")
+        print("MINIMIZING PLAYER'S TURN")
         #^For minimizing player
         best_val = float("inf")
         #bast_move = None
@@ -220,17 +220,11 @@ def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
                 best_move = move
                 best_val = val
 
-            #If the best value for the maximizing player is
-            #less than alpha,
-            # . Note that best_val <= alpha can't possible
-            #   be true if alpha is -inf
-            # . If alpha is greater than best_val, then
-            #   we've moved beyond the viable range.
-            # . set beta for the next child (i.e., move)
-            if best_val <= alpha:
+            if best_val >= alpha:
+                alpha = best_val
+
+            if beta <= alpha:
                 break
-            if best_val >= beta:
-                beta = best_move
     else:
         print("MINIMIZING PLAYER'S TURN")
         best_val = float("inf")
@@ -259,10 +253,12 @@ def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
                 best_move = move
                 best_val = val
 
-            if best_val >= beta:
+            if best_val <= beta:
+                alpha = best_val
+
+            if beta <= alpha:
                 break
-            if best_val <= alpha:
-                alpha = best_move
+
 
     return (best_val, best_move, alpha, beta)
 

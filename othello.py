@@ -510,14 +510,17 @@ class Othello:
 
         return board
 
-    
-    #A throw_away function. Won't be in the final product.
-    def _draw_board(self):
-        '''Draws the game board of an Othello game.'''
+
+    #Useful for testing:
+    def print_board(self):
+        '''Prints the game board of an Othello game.'''
         for i_row in range(self._num_rows):
             print()
             for i_col in range(self._num_cols):
                 if self._board[i_row][i_col] != " ":
                     print(self._board[i_row][i_col], end = " ")
                 else:
-                    print(".", end = " ")                    
+                    print(".", end = " ")
+        print()
+
+

@@ -59,6 +59,15 @@ class OthelloGUI:
         self._root.mainloop()
 
 
+    def get_gamestate(self):
+        """
+        Returns a 2D list representation of a gamestate.
+        return: A 2D list representation of a gamestate
+        rtype: list
+        """
+        return self._gamestate
+
+
     #TODO: Figure out why there's also a call to the AI for mouse motion event...
     # - Ah, so that the CPU could make a move when they go first.
     def _on_mouse_motion(self, event):
@@ -71,7 +80,7 @@ class OthelloGUI:
                     #FOCUS HERE
                     #result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
                     result = othelloai.minimax_abp(self._gamestate, self._cpu_player,
-                                                   float("-inf"), float("inf"), 3)
+                                                   float("-inf"), float("inf"), 10)
                     if result[1] != None:
                         self._process_move(result[1][0], result[1][1])
         self._draw_board()
@@ -143,7 +152,7 @@ class OthelloGUI:
                             #FOCUS HERE
                             #result = othelloai.minimax(self._gamestate, self._cpu_player, 3)
                             result = othelloai.minimax_abp(self._gamestate, self._cpu_player,
-                                                           float("-inf"), float("inf"), 3)
+                                                           float("-inf"), float("inf"), 10)
                             #Handle case where result[1] == None?
                             if result[1] != None:
                                 self._process_move(result[1][0], result[1][1])
@@ -175,7 +184,7 @@ class OthelloGUI:
         '''Processes a move executed by either the player or CPU.'''
         if self._gamestate.valid_move(row, col) and self._game_active:
         #^If move is valid...
-            print("FOR TESTING. Move Made: ", (row, col))
+            print("FOR TESTING. Move Made: {} {}\n".format(row, col))
             self._scoreboard.update_turn_label(self._gamestate)
             self._scoreboard.update_score_label(self._gamestate)
             if self._gamestate.get_winner() != " ":
@@ -269,4 +278,6 @@ if __name__ == "__main__":
     #game = OthelloGUI(4, 4, "B", "Greedy Gary", "W", "B", ">")
     game = OthelloGUI(8, 8, "W", "Mini Max", "W", "W", ">")
     #game = OthelloGUI(8, 8, "B", "None", "W", "W", ">")
+
+    #game.get_gamestate().print_board()
     game.start()

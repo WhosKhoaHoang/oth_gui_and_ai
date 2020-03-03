@@ -94,8 +94,9 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
                                          #^This final argument is what allows the dummy gamestate to take on the board
                                          #configuration of the current gamestate
 
-            #_draw_console_board(dummy_game) #FOR TESTING
+            #dummy_game.print_board() #FOR TESTING
             #print("") #FOR TESTING
+
             dummy_game.valid_move(move[0], move[1])
             (val, move_made) = minimax(dummy_game, cpu_player, depth-1) #Note how move_made isn't used
             #val = minimax(dummy_game, cpu_player, depth-1, move, move_processor)
@@ -140,9 +141,7 @@ def minimax(gamestate, cpu_player, depth): #Removed the move and move_processor 
         return (best_val, best_move)
 
 
-#Removed the move and move_processor parameters
 def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
-    #Initially (for the very first call), move would probably be None
     """
     Executes a cpu move based on a depth-limited
     minimax algorithm with alpha-beta pruning.
@@ -159,26 +158,34 @@ def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
             with that evaluated gamestate, the alpha
             value, and the beta value.
     """
-
     print("ALPHA-BETA PRUNING IN EFFECT")
-    #Note that the same gamestate object is passed through the
-    #minimax game tree and it keeps track of whose turn it is
-    #throughout the traversal.
+    # Note that the same gamestate object is passed through the
+    # minimax game tree and it keeps track of whose turn it is
+    # throughout the traversal.
 
     best_move = None
+    node_type = ""
     if depth == 0 or gamestate.get_winner() != " ":
-        #print("minimax_eval(gamestate, cpu_player): ", minimax_eval(gamestate, cpu_player))
+        node_type = "terminal"
+        print("TERMINAL NODE REACHED (depth: {})".format(depth))
+        print("EVALUATING THIS BOARD:")
+        gamestate.print_board()
+        print("**********")
+        print("GOING BACK UP FROM {} NODE\n".format(node_type))
+
         return (minimax_eval(gamestate, cpu_player), None, alpha, beta)
-        #. Don't think I actually need cpu_player
-        #. Do I even need to return a move? Yes because minimax is ultimately
-        #  required to return a move for processing.
-        #  Think: "this is the move associated with the high evaluation function value
+        # Don't think I actually need cpu_player?
 
     if gamestate.get_turn() == cpu_player:
-        print("MAXIMIZING PLAYER'S TURN")
-        #Note that the root of a minimax game tree corresponds to the maximizing player.
-        #Thus, the CPU player is always the maximizing player since minimax is initiated/
-        #called on behalf of the CPU player when its their turn.
+        node_type = "max"
+        print("AT ^_MAX_^ NODE ({})".format(gamestate.get_turn()))
+        print("CURRENT BOARD CONFIG (depth: {}):".format(depth), end="")
+        gamestate.print_board()
+
+        #Note that the root of a proper minimax game tree corresponds to the
+        #maximizing player. Thus, the CPU player is always the maximizing
+        #player since minimax is initiated/called on behalf of the CPU player
+        #when its their turn.
 
         best_val = float("-inf")
         #best_move = None #Could be no best move if no moves were ever available...
@@ -206,27 +213,37 @@ def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
                                          # the dummy gamestate to take on the board
                                          # configuration of the current gamestate
 
-            #_draw_console_board(dummy_game) #FOR TESTING
             #Perform the move
             dummy_game.valid_move(move[0], move[1])
+
+            print("MOVE MADE BY ^_MAX_^ NODE ({}, depth: {}):".\
+                  format(gamestate.get_turn(), depth))
+            print((move[0], move[1]))
+            dummy_game.print_board() #FOR TESTING
+            print("")
+
+            # . Note how move_made isn't used...
+            # . The current node passes alpha and beta down to children.
             (val, move_made, alpha, beta) = minimax_abp(dummy_game, cpu_player,
                                                         alpha, beta, depth-1)
-            #Note how move_made isn't used...
 
-            #val = minimax(dummy_game, cpu_player, depth-1, move, move_processor)
-            # Perhaps I should also handle case where it's equal? don't want
-            # AI doing same moves all the time.
+            # Perhaps I should also handle case where it's equal?
+            # Wouldn't want the AI doing the same moves all the time.
             if val > best_val:
-                best_move = move
-                best_val = val
+                best_move, best_val = move, val
 
             if best_val >= alpha:
                 alpha = best_val
 
             if beta <= alpha:
+                print("PRUNING!!!")
                 break
     else:
-        print("MINIMIZING PLAYER'S TURN")
+        node_type = "min"
+        print("AT v_MIN_v NODE ({})".format(gamestate.get_turn()))
+        print("CURRENT BOARD CONFIG (depth: {}):".format(depth), end="")
+        gamestate.print_board()
+
         best_val = float("inf")
         #bast_move = None
         valid_moves_lst = _cpu_find_moves(gamestate)
@@ -247,19 +264,28 @@ def minimax_abp(gamestate, cpu_player, alpha, beta, depth):
 
             #Perform the move
             dummy_game.valid_move(move[0], move[1])
+
+            print("MOVE MADE BY v_MIN_v NODE ({}, depth: {}):".\
+                  format(gamestate.get_turn(), depth))
+            print((move[0], move[1]))
+            dummy_game.print_board()
+            print("")
+
+            # . Note how move_made isn't used
+            # . The current node passes alpha and beta down to children.
             (val, move_made, alpha, beta) = minimax_abp(dummy_game, cpu_player,
                                                         alpha, beta, depth-1)
             if val < best_val:
-                best_move = move
-                best_val = val
+                best_move, best_val = move, val
 
             if best_val <= beta:
-                alpha = best_val
+                beta = best_val
 
             if beta <= alpha:
+                print("xxxxxPRUNINGxxxxx!!!")
                 break
 
-
+    print("GOING BACK UP FROM {} NODE\n".format(node_type))
     return (best_val, best_move, alpha, beta)
 
 
@@ -304,15 +330,3 @@ def _cpu_find_moves(gamestate):
                 valid_moves_lst.append((i_row+1, i_col+1))
 
     return valid_moves_lst
-
-
-
-#USED FOR TESTING OUT OTHELLO AI
-def _draw_console_board(gamestate):
-    for i_row in range(gamestate.get_num_rows()):
-        print()
-        for i_col in range(gamestate.get_num_cols()):
-            if gamestate.get_board()[i_row][i_col] != " ":
-                print(gamestate.get_board()[i_row][i_col], end = " ")
-            else:
-                print(".", end = " ") 

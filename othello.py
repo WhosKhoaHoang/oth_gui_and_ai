@@ -1,21 +1,46 @@
 #Contains all of the classes corresponding to an othello gamestate.
-
 import math
 from collections import namedtuple
 from copy import deepcopy
 
+
+
+
 class OthelloInvalidMoveError(Exception):
-    '''An exception that represents an invalid move'''
+    """ An exception that represents an invalid move. """
     pass
 
 
 class Othello:
-    '''A class that represents the game state of an Othello game'''
+    """ A class that represents the game state of an Othello game. """
 
     def __init__(self, num_rows = 4, num_cols = 4,
-                 first_mover = "W", top_left = "B", how_to_win = ">", initial_config=[]):
-                #initial_config was made for AI Othello to get around reference behavior of lists
-        '''Initializes the game state of an Othello game.'''
+                 first_mover = "W", top_left = "B",
+                 how_to_win = ">", initial_config=[]):
+                # initial_config was made for AI Othello to
+                # get around pass-by-reference behavior of lists.
+        """
+        Initializes the game state of an Othello game.
+        @num_rows: The number of rows for this Othello game
+        @num_cols: The number of columns for this Othello game
+        @first_mover: The player who moves first ("W" or "B")
+        @top_left: The top-left player in the initial center
+                   four-piece layout of this Othello game
+        @how_to_win: The method for winning a game (e.g.,
+                     most pieces ">" or fewest pieces "<")
+        @initial_config: A 2D list representing the initial state
+                         of this Othello game (may contain many
+                         or fewer pieces than the traditional
+                         center four-piece layout)
+        type num_rows: int
+        type num_cols: int
+        type first_mover: str
+        type top_left: str
+        type how_to_win: str
+        type initial_config: list 
+        return: None
+        rtype: None
+        """
         if (4 > num_rows > 16) or num_rows % 2 != 0:
             raise Exception
         else:
@@ -57,53 +82,93 @@ class Othello:
 
         
     def get_tl_cell(self):
-        '''Returns the top-left cell of the board.'''
+        """
+        Returns the top-left cell of the board.
+        return: The top-left cell of this Othello game
+        rtype: tuple
+        """
         return self._tl_cell
 
 
     def get_tr_cell(self):
-        '''Returns the top-right cell of the board.'''
+        """
+        Returns the top-right cell of the board.
+        return: The top-right cell of this Othello game
+        rtype: tuple
+        """
         return self._tr_cell
 
 
     def get_bl_cell(self):
-        '''Returns the bottom-left cell of the board.'''
+        """
+        Returns the bottom-left cell of the board.
+        return: The bottom-left cell of this Othello game
+        rtype: tuple
+        """
         return self._bl_cell
 
 
     def get_br_cell(self):
-        '''Returns the bottom-right cell of the board.'''
+        """
+        Returns the bottom-right cell of the board.
+        return: The bottom-right cell of this Othello game
+        rtype: tuple
+        """
         return self._br_cell
     
 
     def get_num_rows(self):
-        '''Returns the number of rows in an Othello board.'''
+        """
+        Returns the number of rows in an Othello board.
+        return: The number of rows in this Othello game
+        rtype: int
+        """
         return self._num_rows
 
 
     def get_num_cols(self):
-        '''Returns the number of columns in an Othello board.'''
+        """
+        Returns the number of columns in an Othello board.
+        return: The number of columns in this Othello game
+        rtype: int
+        """
         return self._num_cols
 
 
     def get_board(self):
-        '''Returns a list representation of the Othello board.'''
+        """
+        Returns a 2D list representation of the Othello board.
+        return: A 2D list representaiton of this Othello game
+        rtype: list
+        """
         return self._board
 
 
     def get_turn(self):
-        '''Returns whose turn it is in an Othello game.'''
+        """
+        Returns whose turn it is in an Othello game.
+        return: The current turn of this Othello game ("B" or "W")
+        rtype: str
+        """
         return self._turn
-    
+
 
     def get_winner(self):
-        '''Returns the winner of the game'''
+        """
+        Returns the winner of the game.
+        return: The winner of this game ("B" or "W")
+        rtype: str
+        """
         return self._winner
-    
+
 
     def get_counts(self):
-        '''Returns the count of black and white tiles in a list in the
-           form [black_count, white_count].'''
+        """
+        Returns the count of black and white tiles.
+        return: The count of black and white titles in a
+                list in the form [black_count, white_count]
+        rtype: list
+        """
         counts = [0, 0]
         for i in range(self._num_rows):
             for j in range(self._num_cols):
@@ -113,26 +178,48 @@ class Othello:
                     counts[1] += 1
         return counts
 
+
     #write function for getting how to win, getting top left...
     def get_win_method(self):
-        '''Returns the win method for a game.'''
+        """
+        Returns the win method for a game.
+        return: The win method for this game (e.g.,
+                most pieces ">" or fewest pieces "<")
+        rtype: str
+        """
         return self._how_to_win
 
 
     def get_top_left(self):
-        '''Returns the top left color in the center square.'''
+        """
+        Returns the top left color in the center square.
+        return: The top left color in the initial center
+                four-piece layout of this Othello game
+        type: str
+        """
         return self._top_left
 
 
     def valid_move(self, row, col):
-        '''Checks the validity of a move and performs the move. returns True if move was valid,
-           else returns False.'''
+        """
+        Checks the validity of a move and performs the move.
+        returns True if move was valid, else returns False.
+        @row: The row where a move will be attempted to be performed
+        @col: The col where a move will be attempted to be performed
+        type row: int
+        type col: int
+        return: True if the attempted move is valid or False otherwise
+        rtype: bool
+        """
         if not self._game_over:
-            i_row, i_col = row-1, col-1 #i_row and i_col wil be used to index the board (hence the i)
+            i_row, i_col = row-1, col-1
+            #i_row and i_col wil be used to index the board (hence the i)
             (valid, flip_lst) = self._valid_placement(i_row, i_col)
             #print("FOR TESTING. Tiles Flipped: ", flip_lst)
     
-            if valid: #Big Change: You decided to make determining validity and flipping separate operations
+            if valid:
+                #Big Change: You decided to make determining validity
+                #            and flipping separate operations
                 self._flip(i_row, i_col, flip_lst)
             else:
                 print("\nPlease enter a valid move!")
@@ -155,25 +242,55 @@ class Othello:
 
             return True
         elif self._game_over:
-            print("The game is over. No more moves can be made!") #Replace this with an exception later?
+            print("The game is over. No more moves can be made!")
+            #TODO: Replace this^ with an exception later?
             return False
 
 
     def _board_is_full(self):
+        """
+        Determines if the board for this Othello game is full.
+        return: True if the board for this Othello game is full
+                or False otherwise.
+        rtype: bool
+        """
         return (self.get_counts()[0] + self.get_counts()[1] == self._num_rows * self._num_cols)
 
 
     def _flip(self, i_row, i_col, flip_lst):
-        '''Flips all tiles generated by a tile placement.'''
+        """
+        Flips all tiles generated by a tile placement.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @flip_lst: The list of positions of tiles to flip
+                   as a result of the given tile placment
+        type i_row: int 
+        type i_col: int
+        type flip_lst: [tuple]
+        return: None
+        rtype: None
+        """
         self._board[i_row][i_col] = self._turn
         for cell in flip_lst:
             self._board[cell[0]][cell[1]] = self._turn
     
 
     def _valid_placement(self, i_row, i_col):
-        '''Conducts several checks with the given tile placement to determine if the placement is
-           valid. If valid, return a tuple containing True and a list of cells to flip. Else, return
-           False and an empty list.'''
+        """
+        Conducts several checks with the given tile placement
+        to determine if the placement is valid. If valid, return
+        a tuple containing True and a list of cells to flip. 
+        Else, return False and an empty list.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        type i_row: int 
+        type i_col: int
+        return: A tuple whose first component is a boolean indicating
+                if the given tile placment is valid and whose second
+                component is a list of cells to flip as a result of
+                the tile placement
+        rtype: (bool, [])
+        """
         if not self._empty_cell(i_row, i_col):
             return (False, [])
         adj_opp_cells = []
@@ -207,8 +324,18 @@ class Othello:
 
 
     def _flip_dirs(self, adj_opp_cells):
-        '''Determines the direction to consider flips for each cell in the given
-           adj_opp_cells list.'''
+        """
+        Determines the direction to consider flips for
+        each cell in the given dj_opp_cells list.
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        type adj_opp_cells: [tuple]
+        return: A tuple whose first component is a boolean indicating
+                if the given tile placment is valid and whose second
+                component is a list of cells to flip as a result of
+                the tile placement
+        rtype: (bool, [])
+        """
         lst = []
         for cell in adj_opp_cells:
             lst.append(self._label_flips(cell[0], cell[1], cell[2]))
@@ -230,9 +357,24 @@ class Othello:
 
 
     def _label_flips(self, i_row, i_col, direction):
-        '''Considers tiles to be potentially flipped given a direction. Returns True
-           and a list of cells to flip if the flip sequence is valid. Else, returns
-           False and and empty list.'''
+        """
+        Considers tiles to be potentially flipped given a direction.
+        Returns True and a list of cells to flip if the flip sequence
+        is valid. Else, returns False and and empty list.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @direction: The direction in which to carry out
+                    tile flips ("n", "ne", "e", "se", "s",
+                    "sw", "w", "nw")
+        type i_row: int 
+        type i_col: int
+        type direction: str
+        return: A tuple whose first component is a boolean indicating
+                if the given tile placment is valid and whose second
+                component is a list of cells to flip as a result of
+                the tile placement
+        rtype: (bool, [])
+        """
         vert_move, hori_move = i_row, i_col  #Initially start at the opposing cell
         candidates = []
 
@@ -261,8 +403,8 @@ class Othello:
             elif direction == "nw":
                 hori_move += 1
                 vert_move += 1
-        #Watch out, index can go out of range after several iterations of the loop body, not just once
-        #you enter the loop!!!
+        #Watch out, index can go out of range after several iterations
+        #of the loop body, not just once you enter the loop!!!
 
         ending_cell = self._board[vert_move][hori_move] 
         if ending_cell == self._turn: #If the ending cell is same color, then flip can be done.
@@ -272,8 +414,12 @@ class Othello:
 
 
     def _set_winner(self):
-        '''Sets the winner of the game. If the game is a draw, the the winner is
-           set to NONE.'''
+        """
+        Sets the winner of the game. If the game is a
+        draw, then the winner is set to NONE.
+        return: None
+        rtype: None
+        """
         b_count = 0
         w_count = 0
 
@@ -293,8 +439,12 @@ class Othello:
 
 
     def _valid_move_exists(self):
-        '''Loops through the game board to determine if
-           any valid moves exist.'''
+        """
+        Loops through the game board to determine
+        if any valid moves exist.
+        return: A list of valid moves
+        rtype: [tuple]
+        """
         lst = []
         for i_row in range(self._num_rows):
             for i_col in range(self._num_cols):
@@ -305,15 +455,46 @@ class Othello:
 
 
     def _handle_border(self, i_row, i_col, adj_opp_cells, check_func, loc):
-        '''Checks for opposing tiles adjacent to cells on the border.'''
+        """
+        Checks for opposing tiles adjacent to cells on the border and
+        appends these titles to adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        @check_func: Any one of the helper functions of this Othello
+                     object: _check_ls_corners, _check_rs_corners,
+                             _check_ls_and_rs, _check_ts_and_bs
+        @loc: A border location (top-side, left-side, right-side, bottom-side)
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        type check_func: function
+        type loc: str
+        return: None
+        rtype: None
+        """
         check_func(i_row, i_col, adj_opp_cells, loc)
         #check_func will be any of the five functions listed below
 
 
     def _check_ls_corners(self, i_row, i_col, adj_opp_cells, loc):
-        '''Checks for opposing tiles adjacent to the left side
-           corners (top left and bottom left) of the game board.
-           Appends the corresponding cells to a list.'''
+        """
+        Checks for opposing tiles adjacent to the left side
+        corners (top left and bottom left) of the game board.
+        Appends the corresponding cells to adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        @loc: A border location (tl, tr, bl, br, ts, bs)
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        type loc: str
+        return: None
+        rtype: None
+        """
         shift = 1 if loc == "tl" else -1  #either top-left or bottom-left
         opp_player = "B" if self._turn == "W" else "W"
 
@@ -336,9 +517,22 @@ class Othello:
             
 
     def _check_rs_corners(self, i_row, i_col, adj_opp_cells, loc):
-        '''Checks for opposing tiles adjacent to the right side
-           corners (top right and bottom right) of the game board.
-           Appends the corresponding cells to a list.'''
+        """
+        Checks for opposing tiles adjacent to the right side
+        corners (top right and bottom right) of the game board.
+        Appends the corresponding cells to adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        @loc: A border location (tl, tr, bl, br, ts, bs)
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        type loc: str
+        return: None
+        rtype: None
+        """
         shift = 1 if loc == "tr" else -1  #either top-right or bottom-right
         opp_player = "B" if self._turn == "W" else "W"
         
@@ -357,8 +551,22 @@ class Othello:
 
 
     def _check_ls_and_rs(self, i_row, i_col, adj_opp_cells, loc):
-        '''Checks for opposing tiles adjacent to the left and right side
-           borders of the game board. Appends the corresponding cell to a list.'''
+        """
+        Checks for opposing tiles adjacent to the left and right
+        side borders of the game board. Appends the corresponding
+        cell to adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        @loc: A border location (tl, tr, bl, br, ts, bs)
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        type loc: str
+        return: None
+        rtype: None
+        """
         shift = 1 if loc == "ls" else -1  #either left side or right side
         opp_player = "B" if self._turn == "W" else "W"
 
@@ -384,8 +592,22 @@ class Othello:
 
 
     def _check_ts_and_bs(self, i_row, i_col, adj_opp_cells, loc):
-        '''Checks for opposing tiles adjacent to the top and bottom side
-           borders of the game board. Appends the corresponding cells to a list.'''
+        """
+        Checks for opposing tiles adjacent to the top and bottom side
+        borders of the game board. Appends the corresponding cells to
+        adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        @loc: A border location (tl, tr, bl, br, ts, bs)
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        type loc: str
+        return: None
+        rtype: None
+        """
         shift = 1 if loc == "ts" else -1  #Either top side or bottom side
         opp_player = "B" if self._turn == "W" else "W"
         
@@ -411,7 +633,19 @@ class Othello:
 
             
     def _check_inner_dirs(self, i_row, i_col, adj_opp_cells):
-        '''Checks for opposing tiles adjacent to the inner cells of the game board.'''
+        """
+        Checks for opposing tiles adjacent to the inner cells of the
+        game board and appends these cells to adj_opp_cells.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @adj_opp_cells: A list of cells that are adjacent
+                        and opposite in color to some piece
+        type i_row: int
+        type i_col: int
+        type adj_opp_cells: [tuple]
+        return: None
+        rtype: None
+        """
         opp_player = "B" if self._turn == "W" else "W"
         
         if self._board[i_row-1][i_col] == opp_player:      #north, tile to be placed will enter from the south
@@ -432,10 +666,24 @@ class Othello:
             adj_opp_cells.append((i_row-1, i_col-1, "se"))
 
 
-    #Instead of this _is_dead_end function, couldn't I have just checked if i_row > num_rows, i_row < num_rows,
-    #i_col > num_cols, or i_col < num_cols? Hmmm.        
+    #Instead of this _is_dead_end function, couldn't I have just
+    #checked if i_row > num_rows, i_row < num_rows, i_col > num_cols,
+    #or i_col < num_cols? Hmmm.        
     def _is_dead_end(self, i_row, i_col, direction):
-        '''Determines if the provided row and column is a dead-end.'''
+        """
+        Determines if the provided row and column is a dead-end.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        @direction: The direction in which to carry out
+                    tile flips ("n", "ne", "e", "se", "s",
+                    "sw", "w", "nw")
+        type i_row: int
+        type i_col: int
+        type direction: str
+        return: True if the provided row and column is
+                a dead-end or False otherwise.
+        rtype: bool
+        """
         return (((i_row, i_col) in self._ts_cells and direction == "s") or
                 ((i_row, i_col) in self._ts_cells and direction == "se") or
                 ((i_row, i_col) in self._ts_cells and direction == "sw") or
@@ -463,7 +711,16 @@ class Othello:
 
                 
     def _cell_in_boundary(self, i_row, i_col):
-        '''Determines if a given cell is inside of the board's boundaries.'''
+        """
+        Determines if a given cell is inside of the board's boundaries.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        type i_row: int
+        type i_col: int
+        return: True if the provided row and column is
+                a boundary or False otherwise.
+        rtype: bool
+        """
         return ((i_row, i_col) == self._tl_cell or
                 (i_row, i_col) == self._tr_cell or
                 (i_row, i_col) == self._bl_cell or
@@ -475,12 +732,26 @@ class Othello:
 
 
     def _empty_cell(self, i_row, i_col):
-        '''Determines if a given cell is empty.'''
+        """
+        Determines if a given cell is empty.
+        @i_row: The 0-based row of a tile placement
+        @i_col: The 0-based col of a tile placement
+        type i_row: int
+        type i_col: int
+        return: True if the provided row and column is
+                empty or False otherwise.
+        rtype: bool
+        """
         return self._board[i_row][i_col] == " "
 
 
     def _switch_turn(self, cur_player):
-        '''Switches the player turn in an Othello game.'''
+        """
+        Switches the player turn in an Othello game.
+        @cur_player: The current player ("B" or "W")
+        return: The opposite color of the current player
+        rtype: str
+        """
         if cur_player == "W":
             self._turn = "B"
         else:
@@ -488,7 +759,18 @@ class Othello:
             
 
     def _make_board(self, rows, cols, top_left):
-        '''Constructs a list representation of an Othello game.'''
+        """
+        Constructs a 2D list representation of an Othello game.
+        @rows: The number of rows for this Othello game
+        @cols: The number of columns for this Othello game
+        @top_left: The top-left player in the initial center
+                   four-piece layout of this Othello game
+        type rows: int
+        type cols: int
+        type top_left: str 
+        return: A 2D list representation of this Othello game
+        rtype: list
+        """
         board = []
         for i in range(rows):
             board.append([])
@@ -511,9 +793,13 @@ class Othello:
         return board
 
 
-    #Useful for testing:
     def print_board(self):
-        '''Prints the game board of an Othello game.'''
+        """
+        Prints the game board of an Othello game.
+        This is a useful method for testing.
+        return: None
+        rtype: None
+        """
         for i_row in range(self._num_rows):
             print()
             for i_col in range(self._num_cols):
@@ -522,5 +808,4 @@ class Othello:
                 else:
                     print(".", end = " ")
         print()
-
 

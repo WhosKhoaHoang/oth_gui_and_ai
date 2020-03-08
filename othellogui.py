@@ -1,17 +1,41 @@
 #Contains the class for the othello board GUI.
-
-_INITIAL_CELL_WIDTH = 60  #Default is 60 pixels
-_INITIAL_CELL_HEIGHT = 60 #Defauly is 60 pixels
-
 import tkinter, othello, scoreboardgui, math, random, time, othelloai
 from collections import defaultdict
 from copy import deepcopy
 
-class OthelloGUI:
-    def __init__(self, num_rows=4, num_cols=4, hum_player="B", cpu_opp="Greedy Gary",
-                 first_mover="B", top_left="B", how_to_win=">"):
-        '''Initializes all the attributes of a BoardGUI object.'''
+_INITIAL_CELL_WIDTH = 60  #Default is 60 pixels
+_INITIAL_CELL_HEIGHT = 60 #Defauly is 60 pixels
 
+
+
+
+class OthelloGUI:
+    """ A class that represents the GUI for an othello game. """
+
+    def __init__(self, num_rows=4, num_cols=4, hum_player="B",
+                 cpu_opp="Greedy Gary", first_mover="B",
+                 top_left="B", how_to_win=">"):
+        """
+        Initializes all the attributes of a BoardGUI object.
+        @num_rows: The number of rows for this othello game
+        @num_cols: The number of columns for this othello game
+        @hum_player: The color of the human player ("B" or "W")
+        @cpu_opp: The AI opponent to play against
+        @first_mover: The color of the player who will move first
+        @top_left: The top-left player in the initial center
+                   four-piece layout of this Othello game                    
+        @how_to_win: The method for winning a game (e.g.,
+                     most pieces ">" or fewest pieces "<")
+        type num_cols: int
+        type num_cols: int
+        type hum_player: str
+        type cpu_opp: str
+        type first_mover: str 
+        type top_left: str
+        type how_to_win: str
+        return: None
+        rtype: None
+        """
         self._root = tkinter.Tk()
         self._root.configure(background='black')
         self._root.wm_title("Othello")
@@ -55,7 +79,11 @@ class OthelloGUI:
 
 
     def start(self):
-        '''Runs the mainloop on the root window.'''
+        """
+        Runs the mainloop on the root window.
+        return: None
+        rtype: None
+        """
         self._root.mainloop()
 
 
@@ -71,7 +99,13 @@ class OthelloGUI:
     #TODO: Figure out why there's also a call to the AI for mouse motion event...
     # - Ah, so that the CPU could make a move when they go first.
     def _on_mouse_motion(self, event):
-        '''An event handler that process motion over the canvas.'''
+        """
+        An event handler that process motion over the canvas.
+        @event: A Motion event
+        type event: Event
+        return: None
+        rtype: None
+        """
         if self._first_mover == self._cpu_player and not self._cpu_made_first_move:
             if self._cpu_opp == "Greedy Gary":
                 othelloai.greedy_cpu(self._gamestate, self._cpu_player, self._process_move)
@@ -90,19 +124,32 @@ class OthelloGUI:
 
 
     def _on_canvas_resize(self, event):
-        '''An event handler that processes window resizes.'''
+        """
+        An event handler that processes window resizes.
+        return: None
+        rtype: None
+        """
         self._draw_board()
 
 
     def _on_scoreboard_click(self, event):
-        '''Destroys the game window upon a click of the scoreboard Frame.'''
+        """
+        Destroys the game window upon a click of the scoreboard Frame.
+        return: None
+        rtype: None
+        """
         if not self._game_active:
             self._game_ended = True
             self._root.destroy()
 
 
     def _draw_board(self):
-        '''Draws the lines and tiles corresponding to a particular Othello game state.'''
+        """
+        Draws the lines and tiles corresponding to a
+        particular Othello game state.
+        return: None
+        rtype: None
+        """
         self._canvas.delete(tkinter.ALL)
         canvas_width = self._canvas.winfo_width()
         canvas_height = self._canvas.winfo_height()
@@ -116,7 +163,15 @@ class OthelloGUI:
 
 
     def _draw_lines(self, canvas_width, canvas_height):
-        '''Draws the lines on the board.'''
+        """
+        Draws the lines on the board.
+        @canvas_width: The width of the canvas containing the board
+        @canvas_height: The height of the canvas containing the board
+        type canvas_width: float
+        type canvas_height: float
+        return: None
+        rtype: None
+        """
         #DRAW VERTICAL LINES
         delta_x = 0
         for col in range(1, self._num_cols):
@@ -135,7 +190,13 @@ class OthelloGUI:
 
 
     def _on_canvas_click(self, event):
-        '''An event handler that processes left mouse button clicks.'''
+        """
+        An event handler that processes left mouse button clicks.
+        @event: A ButtonPress event
+        type event: ButtonPress
+        return: None
+        rtype: None
+        """
         if self._game_active:
             if self._cpu_opp == "None":
                 self._player_move(event)
@@ -163,11 +224,17 @@ class OthelloGUI:
         else:
             self._game_ended = True
             self._root.destroy() #Click on canvas to get rid of window after a completed game
-            
-    
+
+
     def _player_move(self, event):
         #Maybe I could use a while loop here too instead of having if sttements in _on_canvas_click?
-        '''Executes a human player's move'''
+        """
+        Executes a human player's move
+        @event: A ButtonPress event
+        type event: ButtonPress
+        return: None
+        rtype: None
+        """
         canvas_width = self._canvas.winfo_width()
         canvas_height = self._canvas.winfo_height()
         
@@ -181,7 +248,15 @@ class OthelloGUI:
 
 
     def _process_move(self, row, col):
-        '''Processes a move executed by either the player or CPU.'''
+        """
+        Processes a move executed by either the player or CPU.
+        @row: The row (non 0-based) where a tile is to be placed
+        @col: The column (non 0-based) where a tile is to be placed
+        type row: int
+        type col: int
+        return: None
+        rtype: None
+        """
         if self._gamestate.valid_move(row, col) and self._game_active:
         #^If move is valid...
             print("FOR TESTING. Move Made: {} {}\n".format(row, col))
@@ -189,7 +264,9 @@ class OthelloGUI:
             self._scoreboard.update_score_label(self._gamestate)
             if self._gamestate.get_winner() != " ":
                 self._scoreboard.indicate_result(self._gamestate)
-                self._game_active = False #Perhaps you only need to use self._gamestate.get_winner() rather than this variable?
+                self._game_active = False
+                #Perhaps you only need to use self._gamestate.get_winner()
+                #instead of self._game_active?
         elif not self._gamestate.valid_move(row, col) and self._gamestate.get_winner() != " ":
         #^Handles case when both players no longer have valid moves before board is full..
             self._scoreboard.indicate_result(self._gamestate)
@@ -203,7 +280,20 @@ class OthelloGUI:
 
     
     def _find_nearest_cell(self, event, midpoint_mappings):
-        '''Finds the nearest cell to a mouse click made on the game board.'''
+        """
+        Finds the nearest cell to a mouse click made on the game board.
+        @event: A ButtonPress event
+        @midpoint_mappings: A dictionary whose keys are all
+                            of the board's square positions
+                            and whose values are midpoints
+                            between the top-left and bottom-
+                            right of a square.
+        type event: Event
+        type midpoint_mappings: dict
+        return: A 2-tuple representing the nearest cell to a
+                mouse click made on the game board
+        rtype: tuple
+        """
         min_dist = float("inf")
         nearest_cell = (0, 0)
         for item in midpoint_mappings.items():
@@ -215,9 +305,16 @@ class OthelloGUI:
         return nearest_cell
 
 
-    def _draw_circles(self, corner_mappings): #Note how the TL and BR corners are needed to draw circles (ovals)
-        '''Takes a mapping of cell positions to top left and bottom right corners and draws circles
-           according to how they are arranged for a particular gamestate.'''
+    def _draw_circles(self, corner_mappings):
+        """
+        Takes a mapping of cell positions to top left and bottom
+        right corners and draws circles according to how they are
+        arranged for a particular gamestate.
+        @corner_mappings: 
+        type corner_mappings: 
+        return: None
+        type: None
+        """
         for (i, j) in corner_mappings:
             if self._gamestate.get_board()[i][j] == "B":
                 self._canvas.create_oval(corner_mappings[(i,j)][0][0]+8, corner_mappings[(i,j)][0][1]+8,
@@ -225,12 +322,22 @@ class OthelloGUI:
             elif self._gamestate.get_board()[i][j] == "W":
                 self._canvas.create_oval(corner_mappings[(i,j)][0][0]+8, corner_mappings[(i,j)][0][1]+8,
                                          corner_mappings[(i,j)][1][0]-8, corner_mappings[(i,j)][1][1]-8, fill="white", width=3)
-        
+
 
     def _get_corners(self, canvas_width, canvas_height):
-        '''Genereates a list where each elements is a list of tuples whoses components
-           are the top-left and bottom-right corners of a cell. An element is created
-           for each cell on the board.'''
+        """
+        Generates a list where each elements is a list of tuples
+        whose components are the top-left and bottom-right corners
+        of a cell. An element is created for each cell on the board.
+        @canvas_width: The width of the canvas containing the board
+        @canvas_height: The height of the canvas containing the board
+        type canvas_width: float
+        type canvas_height: float
+        return: A list where each elements is a list of tuples
+                whose components are the top-left and bottom-right
+                corners of a cell.
+        rtype: list
+        """
         cur_corner_x = 0
         cur_corner_y = 0
         corners = []
@@ -250,10 +357,28 @@ class OthelloGUI:
 
 
     def _get_mappings(self, corners, mode):
-        '''Takes a list of the top left and bottom right corners of all the squares on the
-           board and maps these corners to their corresponding (i,j)th cell (if mode is "corners")
-           or maps the midpoint between these corners to the corresponding (i,j)th cell (if mode is
-           "midpoints"). The mapping is represented as a dictionary.'''
+        """
+        Takes a list of the top left and bottom right corners of
+        all the squares on the board and maps these corners to their
+        corresponding (i,j)th cell (if mode is "corners") or maps the
+        midpoint between these corners to the corresponding (i,j)th
+        cell (if mode is "midpoints"). The mapping is represented as
+        a dictionary.
+        @corners: A list of all the top-left and bottom-right corners
+                  of a board's cells
+        @mode: String value ("corners" or "midpoints") that determines whether
+               to map a board's (i, j)th cell to the top-left and bottom-right
+               corners or the midpoints of these corners.
+        type corners: list
+        type mode: str
+        return: A dictionary whose keys are the (i, j)th cells of the board and
+                whose values are:
+                    * If mode is "corners": tuples representing the
+                      associated top-left and bottom-right corners
+                    * If mode is "midpoints": The midpoint between the
+                      associated top-left and bottom-right corners.
+        rtype: dict
+        """
         mappings = dict() #recall that dictionaries are not ordered!!!!
         k = 0
         for i in range(self._num_rows):
@@ -269,15 +394,20 @@ class OthelloGUI:
     
 
     def did_game_end(self):
-        '''Returns a boolean indicating if the current othello game has ended.'''
+        """
+        Returns a boolean indicating if the current othello game has ended.
+        return: True if the current game has ended or False otherwise
+        rtype: bool
+        """
         return self._game_ended
 
 
-#For testing
+
+
 if __name__ == "__main__":
     #game = OthelloGUI(4, 4, "B", "Greedy Gary", "W", "B", ">")
     game = OthelloGUI(8, 8, "W", "Mini Max", "W", "W", ">")
     #game = OthelloGUI(8, 8, "B", "None", "W", "W", ">")
 
-    #game.get_gamestate().print_board()
     game.start()
+

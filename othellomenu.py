@@ -1,15 +1,18 @@
 #Contains classes that represent pop-up menu items.
-
 import tkinter
 import othello
 import math
 
 
 class OthelloMenu: #Watch out! There's already a class called Menu in the tkinter library
-    '''Represents the menu that pops up before a game'''
+    """ Represents the menu that pops up before a game. """
     
     def __init__(self):
-        '''Initializes the state of an Othello game menu.'''
+        """
+        Initializes the state of an Othello game menu.
+        return: None
+        rtype: None
+        """
         self._menu_window = tkinter.Tk() #The root window
         self._menu_window.wm_title("Othello Menu")
         self._menu_window.resizable(0,0)
@@ -219,49 +222,86 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
         
 
     def show(self):
-        '''Runs the main loop on the root window.'''
+        """
+        Runs the main loop on the root window.
+        """
         #self._menu_window.grab_set()
         #self._menu_window.wait_window()
         self._menu_window.mainloop()
         
 
     def get_num_rows(self)->int:
-        '''Gets the number of rows set for a game.'''
+        """
+        Gets the number of rows set for a game.
+        return: The number of rows for an othello game.
+        rtype: int
+        """
         return self._num_rows.get()
 
 
     def get_num_cols(self)->int:
-        '''Gets the number of columns set for a game.'''
+        """
+        Gets the number of columns set for a game.
+        return: The number of columns for an othello game.
+        rtype: int
+        """
         return self._num_cols.get()
 
 
     def get_player_color(self)->str:
-        '''Gets the player color set for a game.'''
-        return self._player_color.get() #Must call get() on a control variable to get the value!!!
+        """
+        Gets the player color set for a game.
+        return: The color of the human player ("B" or "W")
+        rtype: str
+        """
+        #Must call get() on a control variable to get the value!!!
+        return self._player_color.get()
 
 
     def get_cpu_opp(self)->str:
-        '''Gets the cpu color set for a game.'''
+        """
+        Gets the cpu color set for a game.
+        return: The color of the CPU player ("B" or "W")
+        rtype: str
+        """
         return self._cpu_opp.get() #Must call get() on a control variable to get the value!!!
     
 
     def get_starter(self)->str:
-        '''Gets the starting player set for a game.'''
+        """
+        Gets the starting player set for a game.
+        return: The color of the starting player
+        rtype: str
+        """
         return self._starter.get() #Must call get() on a control variable to get the value!!!
 
 
     def get_top_left_player(self)->str:
-        '''Gets the top-left player set for a game.'''
+        """
+        Gets the top-left player set for a game.
+        return: The top-left player in the initial center
+                four-piece layout of this Othello game.
+        rtype: str
+        """
         return self._tlp.get()
 
 
     def get_win_method(self)->str:
-        '''Gets the win method set for a game.'''
+        """
+        Gets the win method set for a game.
+        return: The win method for this game (e.g.,
+                most pieces ">" or fewest pieces "<")
+        rtype: str
+        """
         return self._win_method.get()
 
 
     def _on_ok_button(self):
-        '''Handles the event of the OK button being pressed.'''
+        """
+        Handles the event of the OK button being pressed.
+        return: None
+        rtype: None
+        """
         '''
         #Instead of checking for valid input, you can just force the player to input correct values by
         #providing a drop-down menu of values.
@@ -295,23 +335,36 @@ class OthelloMenu: #Watch out! There's already a class called Menu in the tkinte
 
 
     def _on_cancel_button(self):
-        '''Handles the event of the Cancel button being pressed.'''
+        """
+        Handles the event of the Cancel button being pressed.
+        return: None
+        rtype: None
+        """
         #self._cancel_button_clicked = True
         #print(self._cancel_button_clicked)
         self._menu_window.destroy()
         
 
     def was_ok_clicked(self):
-        '''Determines if the OK button was pressed'''
+        """
+        Determines if the OK button was pressed
+        return: True if the OK button was pressed on
+                this menu window or False otherwise
+        rtype: bool
+        """
         return self._ok_button_clicked
 
 
 
 class PlayAgain:
-    '''A class to represent the pop-up that asks the user if they would like to play again.'''
+    """ A class to represent the pop-up that asks the user if they would like to play again. """
 
     def __init__(self):
-        '''Initializes the state of a "play-again" pop-up menu.'''
+        """
+        Initializes the state of a "play-again" pop-up menu.
+        return: None
+        rtype: None
+        """
         self._dialog_window = tkinter.Tk()
         self._dialog_window.configure(background='gray')
         self._dialog_window.wm_title("")
@@ -334,24 +387,47 @@ class PlayAgain:
         no_button = tkinter.Button(master=buttons_frame, text="No", command=self._on_no_pressed)
         no_button.grid(row=0, column=1, padx=(5,0), pady=(0,10), sticky=tkinter.E)
 
+
     def show(self):
-        '''Runs the main loop on the root window.'''
+        """
+        Runs the main loop on the root window.
+        return: None
+        rtype: None
+        """
         #self._dialog_window.grab_set()
         #self._dialog_window.wait_window()
         self._dialog_window.mainloop()
 
+
     def _on_yes_pressed(self):
-        '''Handles the event of the "Yes" button being pressed.'''
+        """
+        Handles the event of the "Yes" button being pressed.
+        return: None
+        rtype: None
+        """
         self._dialog_window.destroy()
 
+
     def _on_no_pressed(self):
-        '''Handles the event of the "No" button bein pressed.'''
+        """
+        Handles the event of the 'No' button bein pressed.
+        return: None
+        rtype: None
+        """
         self._play_again = False
         self._dialog_window.destroy()
 
+
     def will_play_again(self):
-        '''Returns the player's decision to play again or not.'''
+        """
+        Returns the player's decision to play again or not.
+        return: True if the human player has decided to play again
+                or False otherwise
+        rtype: None
+        """
         return self._play_again
+
+
 
 
 if __name__ == "__main__":
